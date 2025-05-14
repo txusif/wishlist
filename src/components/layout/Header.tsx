@@ -19,7 +19,7 @@ export function Header({ onAddItem }: HeaderProps) {
           <div className="bg-gradient-to-r from-secondary to-primary rounded-lg p-2 mr-3">
             <Gift className="h-6 w-6 text-white" />
           </div>
-          <h1 className="text-2xl font-bold bg-gradient-to-r from-secondary to-primary text-transparent bg-clip-text">
+          <h1 className="text-2xl hidden sm:block font-bold bg-gradient-to-r from-secondary to-primary text-transparent bg-clip-text">
             Wishlist Aggregator
           </h1>
         </motion.div>
@@ -35,7 +35,7 @@ export function Header({ onAddItem }: HeaderProps) {
             className="shadow-lg shadow-primary/20"
           >
             <Plus className="h-4 w-4 mr-2" />
-            Add More
+            Add Item
           </Button>
         </motion.div>
       </div>
