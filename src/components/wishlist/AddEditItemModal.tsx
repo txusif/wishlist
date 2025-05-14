@@ -5,6 +5,7 @@ import { Input } from "../ui/Input";
 import { Select } from "../ui/Select";
 import { WishlistItem, AddItemFormData, Priority } from "../../types";
 import { useWishlistStore } from "../../store/wishlistStore";
+import { Plus } from "lucide-react";
 
 interface AddEditItemModalProps {
   isOpen: boolean;
@@ -37,6 +38,8 @@ export function AddEditItemModal({
     Partial<Record<keyof AddItemFormData, string>>
   >({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isAddingNewSource, setIsAddingNewSource] = useState(false);
+  const [isAddingNewCategory, setIsAddingNewCategory] = useState(false);
 
   // When the modal opens or the item to edit changes, reset the form
   useEffect(() => {
@@ -48,13 +51,15 @@ export function AddEditItemModal({
         setFormData(initialFormState);
       }
       setErrors({});
+      setIsAddingNewSource(false);
+      setIsAddingNewCategory(false);
     }
   }, [isOpen, itemToEdit]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
   ) => {
-    const { name, value, type } = e.target;
+    const { name, value } = e.target;
 
     setFormData((prev) => ({
       ...prev,
@@ -95,7 +100,6 @@ export function AddEditItemModal({
       newErrors.category = "Category is required";
     }
 
-    // Improved price validation
     if (!formData.price.trim()) {
       newErrors.price = "Price is required";
     } else {
@@ -119,7 +123,6 @@ export function AddEditItemModal({
     setIsSubmitting(true);
 
     try {
-      // Keep the price as a string to match the WishlistItem type
       if (isEditing && itemToEdit) {
         await updateItem(itemToEdit.id, formData);
       } else {
@@ -143,7 +146,6 @@ export function AddEditItemModal({
     }
   };
 
-  // Get existing sources and categories for autocomplete
   const sources = uniqueSources();
   const categories = uniqueCategories();
 
@@ -159,7 +161,7 @@ export function AddEditItemModal({
       onClose={onClose}
       title={isEditing ? "Edit Wishlist Item" : "Add New Wishlist Item"}
     >
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
         <div>
           <label
             htmlFor="name"
@@ -173,9 +175,8 @@ export function AddEditItemModal({
             value={formData.name}
             onChange={handleChange}
             placeholder="Enter product name"
-            className={
-              errors.name ? "border-error focus-visible:ring-error" : ""
-            }
+            className={errors.name ? "border-error focus-visible:ring-error" : ""}
+            autoComplete="off"
           />
           {errors.name && (
             <p className="mt-1 text-xs text-error">{errors.name}</p>
@@ -195,9 +196,8 @@ export function AddEditItemModal({
             value={formData.link}
             onChange={handleChange}
             placeholder="https://example.com/product"
-            className={
-              errors.link ? "border-error focus-visible:ring-error" : ""
-            }
+            className={errors.link ? "border-error focus-visible:ring-error" : ""}
+            autoComplete="off"
           />
           {errors.link && (
             <p className="mt-1 text-xs text-error">{errors.link}</p>
@@ -212,22 +212,47 @@ export function AddEditItemModal({
             >
               Source*
             </label>
-            <Input
-              id="source"
-              name="source"
-              list="sourceOptions"
-              value={formData.source}
-              onChange={handleChange}
-              placeholder="e.g., Amazon, Flipkart"
-              className={
-                errors.source ? "border-error focus-visible:ring-error" : ""
-              }
-            />
-            <datalist id="sourceOptions">
-              {sources.map((source) => (
-                <option key={source} value={source} />
-              ))}
-            </datalist>
+            <div className="flex gap-2">
+              {isAddingNewSource ? (
+                <Input
+                  id="source"
+                  name="source"
+                  value={formData.source}
+                  onChange={handleChange}
+                  placeholder="Enter new source"
+                  className={
+                    errors.source ? "border-error focus-visible:ring-error" : ""
+                  }
+                  autoComplete="off"
+                />
+              ) : (
+                <Select
+                  id="source"
+                  name="source"
+                  value={formData.source}
+                  onChange={handleChange}
+                  options={[
+                    { value: "", label: "Select source" },
+                    ...sources.map((source) => ({
+                      value: source,
+                      label: source,
+                    })),
+                  ]}
+                  className={
+                    errors.source ? "border-error focus-visible:ring-error" : ""
+                  }
+                />
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setIsAddingNewSource(!isAddingNewSource)}
+                title={isAddingNewSource ? "Select existing" : "Add new"}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
             {errors.source && (
               <p className="mt-1 text-xs text-error">{errors.source}</p>
             )}
@@ -240,22 +265,47 @@ export function AddEditItemModal({
             >
               Category*
             </label>
-            <Input
-              id="category"
-              name="category"
-              list="categoryOptions"
-              value={formData.category}
-              onChange={handleChange}
-              placeholder="e.g., College, Work, Personal"
-              className={
-                errors.category ? "border-error focus-visible:ring-error" : ""
-              }
-            />
-            <datalist id="categoryOptions">
-              {categories.map((category) => (
-                <option key={category} value={category} />
-              ))}
-            </datalist>
+            <div className="flex gap-2">
+              {isAddingNewCategory ? (
+                <Input
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  placeholder="Enter new category"
+                  className={
+                    errors.category ? "border-error focus-visible:ring-error" : ""
+                  }
+                  autoComplete="off"
+                />
+              ) : (
+                <Select
+                  id="category"
+                  name="category"
+                  value={formData.category}
+                  onChange={handleChange}
+                  options={[
+                    { value: "", label: "Select category" },
+                    ...categories.map((category) => ({
+                      value: category,
+                      label: category,
+                    })),
+                  ]}
+                  className={
+                    errors.category ? "border-error focus-visible:ring-error" : ""
+                  }
+                />
+              )}
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={() => setIsAddingNewCategory(!isAddingNewCategory)}
+                title={isAddingNewCategory ? "Select existing" : "Add new"}
+              >
+                <Plus className="h-4 w-4" />
+              </Button>
+            </div>
             {errors.category && (
               <p className="mt-1 text-xs text-error">{errors.category}</p>
             )}
@@ -296,6 +346,7 @@ export function AddEditItemModal({
               className={
                 errors.price ? "border-error focus-visible:ring-error" : ""
               }
+              autoComplete="off"
             />
             {errors.price && (
               <p className="mt-1 text-xs text-error">{errors.price}</p>
@@ -319,6 +370,7 @@ export function AddEditItemModal({
             className={
               errors.image_url ? "border-error focus-visible:ring-error" : ""
             }
+            autoComplete="off"
           />
           {errors.image_url && (
             <p className="mt-1 text-xs text-error">{errors.image_url}</p>
