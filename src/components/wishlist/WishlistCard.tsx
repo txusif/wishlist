@@ -42,8 +42,7 @@ export function WishlistCard({
               <img
                 src={item.image_url}
                 alt={item.name}
-                className="absolute inset-0 w-full h-full object-cover"
-                loading="lazy"
+                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
               <div className="flex items-center justify-center h-full bg-gradient-to-br from-muted to-card">
