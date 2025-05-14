@@ -42,7 +42,7 @@ export function WishlistCard({
               <img
                 src={item.image_url}
                 alt={item.name}
-                className="w-full h-full object-contain"
+                className="absolute inset-0 w-full h-full object-cover"
                 loading="lazy"
               />
             ) : (
