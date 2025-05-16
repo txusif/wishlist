@@ -1,7 +1,8 @@
 import { motion } from "framer-motion";
-import { Gift, Plus, Filter } from "lucide-react";
+import { Gift, Plus, Filter, LogOut } from "lucide-react";
 import { Button } from "../ui/Button";
 import { useWishlistStore } from "../../store/wishlistStore";
+import { supabase } from "../../lib/supabase";
 
 interface HeaderProps {
   onAddItem: () => void;
@@ -11,6 +12,10 @@ interface HeaderProps {
 export function Header({ onAddItem, onFilterClick }: HeaderProps) {
   const { filters } = useWishlistStore();
   const hasActiveFilters = Object.values(filters).some((value) => value !== null);
+
+  const handleSignOut = async () => {
+    await supabase.auth.signOut();
+  };
 
   return (
     <header className="sticky top-0 z-10 bg-background/80 backdrop-blur-sm border-b border-border">
@@ -54,6 +59,15 @@ export function Header({ onAddItem, onFilterClick }: HeaderProps) {
           >
             <Plus className="h-4 w-4 mr-2" />
             Add Item
+          </Button>
+          <Button
+            onClick={handleSignOut}
+            variant="outline"
+            size="icon"
+            className="ml-2"
+            title="Sign out"
+          >
+            <LogOut className="h-4 w-4" />
           </Button>
         </motion.div>
       </div>

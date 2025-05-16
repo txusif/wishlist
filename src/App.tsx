@@ -6,15 +6,34 @@ import { AddEditItemModal } from "./components/wishlist/AddEditItemModal";
 import { FilterModal } from "./components/filters/FilterModal";
 import { useWishlistStore } from "./store/wishlistStore";
 import { WishlistItem } from "./types";
+import { AuthPage } from "./components/auth/AuthPage";
+import { supabase } from "./lib/supabase";
 
 function App() {
   const { fetchItems } = useWishlistStore();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<WishlistItem | null>(null);
+  const [session, setSession] = useState(null);
 
   useEffect(() => {
-    fetchItems();
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      if (session) {
+        fetchItems();
+      }
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+      if (session) {
+        fetchItems();
+      }
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   const handleAddItem = () => {
@@ -31,6 +50,10 @@ function App() {
     setIsAddModalOpen(false);
     setItemToEdit(null);
   };
+
+  if (!session) {
+    return <AuthPage />;
+  }
 
   return (
     <div className="dark">
