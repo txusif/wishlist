@@ -37,12 +37,12 @@ export function WishlistCard({
       >
         {/* Product Image */}
         <div className="relative">
-          <div className="w-full h-44 bg-muted relative overflow-hidden">
+          <div className="w-full h-80 bg-white relative overflow-hidden">
             {item.image_url ? (
               <img
                 src={item.image_url}
                 alt={item.name}
-                className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                className="w-full h-full object-scale-down transition-transform duration-500 group-hover:scale-105"
               />
             ) : (
               <div className="flex items-center justify-center h-full bg-gradient-to-br from-muted to-card">
