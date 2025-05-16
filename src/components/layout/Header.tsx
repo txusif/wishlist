@@ -25,7 +25,7 @@ export function Header({ onAddItem, onFilterClick }: HeaderProps) {
             <Gift className="h-6 w-6 text-white" />
           </div>
           <h1 className="text-2xl hidden sm:block font-bold bg-gradient-to-r from-secondary to-primary text-transparent bg-clip-text">
-            Wishlist Aggregator
+            Wishbox
           </h1>
         </motion.div>
 
