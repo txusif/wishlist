@@ -1,15 +1,16 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Layout } from "./components/layout/Layout";
-import { FilterBar } from "./components/filters/FilterBar";
 import { WishlistGrid } from "./components/wishlist/WishlistGrid";
 import { AddEditItemModal } from "./components/wishlist/AddEditItemModal";
+import { FilterModal } from "./components/filters/FilterModal";
 import { useWishlistStore } from "./store/wishlistStore";
 import { WishlistItem } from "./types";
 
 function App() {
   const { fetchItems } = useWishlistStore();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<WishlistItem | null>(null);
 
   useEffect(() => {
@@ -33,22 +34,24 @@ function App() {
 
   return (
     <div className="dark">
-      <Layout onAddItem={handleAddItem}>
+      <Layout onAddItem={handleAddItem} onFilterClick={() => setIsFilterModalOpen(true)}>
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
           className="space-y-2"
         >
-          <div className="sticky top-[73px] bg-background/80 backdrop-blur-sm z-10 -mx-4 px-4">
-            <FilterBar />
-          </div>
           <WishlistGrid onEditItem={handleEditItem} />
 
           <AddEditItemModal
             isOpen={isAddModalOpen}
             onClose={handleCloseModal}
             itemToEdit={itemToEdit}
+          />
+
+          <FilterModal
+            isOpen={isFilterModalOpen}
+            onClose={() => setIsFilterModalOpen(false)}
           />
         </motion.div>
       </Layout>
