@@ -8,13 +8,14 @@ import { useWishlistStore } from "./store/wishlistStore";
 import { WishlistItem } from "./types";
 import { AuthPage } from "./components/auth/AuthPage";
 import { supabase } from "./lib/supabase";
+import { Session } from "@supabase/supabase-js";
 
 function App() {
   const { fetchItems } = useWishlistStore();
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isFilterModalOpen, setIsFilterModalOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<WishlistItem | null>(null);
-  const [session, setSession] = useState(null);
+  const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -57,7 +58,10 @@ function App() {
 
   return (
     <div className="dark">
-      <Layout onAddItem={handleAddItem} onFilterClick={() => setIsFilterModalOpen(true)}>
+      <Layout
+        onAddItem={handleAddItem}
+        onFilterClick={() => setIsFilterModalOpen(true)}
+      >
         <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
