@@ -20,7 +20,7 @@ export function Layout({ children, onAddItem, onFilterClick }: LayoutProps) {
   return (
     <div className="min-h-screen flex flex-col">
       <Header onAddItem={onAddItem} onFilterClick={onFilterClick} />
-      <main className="flex-1 container mx-auto px-4 pb-6">{children}</main>
+      <main className="flex-1 container mx-auto px-4 py-6">{children}</main>
       <footer className="sticky bottom-0 border-t border-border bg-background">
         <div className="container mx-auto px-4">
           <div className="flex justify-between items-center bg-card rounded-lg p-3 my-4">
